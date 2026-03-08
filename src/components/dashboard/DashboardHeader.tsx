@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Shield, Radio, Clock, Filter, ChevronDown } from 'lucide-react';
+import { Shield, Radio, Clock, Filter, ChevronDown, LogOut } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
 const timeRanges = ['Now', '24h', '7d', '30d'] as const;
@@ -12,6 +13,7 @@ export const DashboardHeader = () => {
   const [sector, setSector] = useState<string>('All');
   const [scenario, setScenario] = useState<string>('Live Risk');
   const [highConfOnly, setHighConfOnly] = useState(false);
+  const { user, signOut } = useAuth();
 
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
@@ -80,6 +82,15 @@ export const DashboardHeader = () => {
             <span className="w-1.5 h-1.5 rounded-full bg-risk-stable animate-pulse" />
             LIVE
           </div>
+
+          {/* User / Sign out */}
+          {user && (
+            <button onClick={signOut}
+              className="flex items-center gap-1.5 px-2 py-1 text-[11px] font-mono text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors">
+              <LogOut className="w-3 h-3" />
+              Sign Out
+            </button>
+          )}
         </div>
       </div>
     </header>

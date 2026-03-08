@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      alert_thresholds: {
+        Row: {
+          created_at: string
+          id: string
+          probability_threshold: number
+          severity_threshold: number
+          sound_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          probability_threshold?: number
+          severity_threshold?: number
+          sound_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          probability_threshold?: number
+          severity_threshold?: number
+          sound_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       live_risk_events: {
         Row: {
           cascade_potential: number
@@ -74,6 +104,30 @@ export type Database = {
           status?: string
           updated_at?: string
           velocity?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          team: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+          team?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          team?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
