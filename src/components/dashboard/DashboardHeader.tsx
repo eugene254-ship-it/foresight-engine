@@ -13,6 +13,7 @@ export const DashboardHeader = () => {
   const [sector, setSector] = useState<string>('All');
   const [scenario, setScenario] = useState<string>('Live Risk');
   const [highConfOnly, setHighConfOnly] = useState(false);
+  const { user, signOut } = useAuth();
 
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
