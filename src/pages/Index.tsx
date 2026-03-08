@@ -10,10 +10,27 @@ import { SimulationForecastPanel } from '@/components/dashboard/SimulationForeca
 import { SimulationPlayback } from '@/components/dashboard/SimulationPlayback';
 import { CounterfactualComparison } from '@/components/dashboard/CounterfactualComparison';
 import { DataSourceHealthBar } from '@/components/dashboard/DataSourceHealthBar';
+import { LiveStreamIndicator } from '@/components/dashboard/LiveStreamIndicator';
+import { LiveEventFeed } from '@/components/dashboard/LiveEventFeed';
+import { useRealtimeRisks } from '@/hooks/useRealtimeRisks';
+import { supabase } from '@/integrations/supabase/client';
 import { mockRiskEvents, type RiskEvent, type MapZone } from '@/data/mockRiskData';
 
 const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState<RiskEvent | null>(null);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const { events: liveEvents, status: streamStatus } = useRealtimeRisks();
+
+  const handleTriggerSimulation = useCallback(async () => {
+    setIsSimulating(true);
+    try {
+      await supabase.functions.invoke('simulate-risk-stream');
+    } catch (err) {
+      console.error('Simulation error:', err);
+    } finally {
+      setTimeout(() => setIsSimulating(false), 1000);
+    }
+  }, []);
 
   const handleSelectZone = useCallback((zone: MapZone) => {
     // Find a matching risk event for the zone
@@ -62,6 +79,18 @@ const Index = () => {
       {/* Risk Ranking Table */}
       <div className="px-4 pb-4">
         <RiskRankingTable onSelectEvent={handleSelectEvent} />
+      </div>
+
+      {/* Live Streaming Section */}
+      <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <LiveStreamIndicator
+          status={streamStatus}
+          onTriggerSimulation={handleTriggerSimulation}
+          isSimulating={isSimulating}
+        />
+        <div className="lg:col-span-2">
+          <LiveEventFeed events={liveEvents} />
+        </div>
       </div>
 
       {/* Data Source Health */}
