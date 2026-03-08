@@ -13,6 +13,7 @@ import { DataSourceHealthBar } from '@/components/dashboard/DataSourceHealthBar'
 import { LiveStreamIndicator } from '@/components/dashboard/LiveStreamIndicator';
 import { LiveEventFeed } from '@/components/dashboard/LiveEventFeed';
 import { CriticalAlertBanner } from '@/components/dashboard/CriticalAlertBanner';
+import { HistoricalTimeline } from '@/components/dashboard/HistoricalTimeline';
 import { useRealtimeRisks } from '@/hooks/useRealtimeRisks';
 import { supabase } from '@/integrations/supabase/client';
 import { mockRiskEvents, type RiskEvent } from '@/data/mockRiskData';
