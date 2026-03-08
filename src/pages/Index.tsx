@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { RiskOverviewCards } from '@/components/dashboard/RiskOverviewCards';
-import { RiskMapPanel } from '@/components/dashboard/RiskMapPanel';
+import { MapboxRiskMap } from '@/components/dashboard/MapboxRiskMap';
 import { RiskDetailDrawer } from '@/components/dashboard/RiskDetailDrawer';
 import { CascadeGraphPanel } from '@/components/dashboard/CascadeGraphPanel';
 import { FragilityIndexPanel } from '@/components/dashboard/FragilityIndexPanel';
@@ -14,7 +14,9 @@ import { LiveStreamIndicator } from '@/components/dashboard/LiveStreamIndicator'
 import { LiveEventFeed } from '@/components/dashboard/LiveEventFeed';
 import { useRealtimeRisks } from '@/hooks/useRealtimeRisks';
 import { supabase } from '@/integrations/supabase/client';
-import { mockRiskEvents, type RiskEvent, type MapZone } from '@/data/mockRiskData';
+import { mockRiskEvents, type RiskEvent } from '@/data/mockRiskData';
+
+const MAPBOX_TOKEN = '__MAPBOX_TOKEN__';
 
 const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState<RiskEvent | null>(null);
@@ -32,13 +34,10 @@ const Index = () => {
     }
   }, []);
 
-  const handleSelectZone = useCallback((zone: MapZone) => {
+  const handleSelectZone = useCallback((zoneId: string) => {
     // Find a matching risk event for the zone
-    const match = mockRiskEvents.find(e =>
-      e.region.toLowerCase().includes(zone.name.toLowerCase().split(' ')[0]) ||
-      zone.topRisk.toLowerCase().includes(e.sector.toLowerCase())
-    );
-    setSelectedEvent(match || mockRiskEvents[0]);
+    const match = mockRiskEvents.find(e => e.id === zoneId) || mockRiskEvents[0];
+    setSelectedEvent(match);
   }, []);
 
   const handleSelectEvent = useCallback((event: RiskEvent) => {
@@ -49,17 +48,25 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <DashboardHeader />
 
-      {/* Hero: Failure Outlook Cards */}
-      <RiskOverviewCards />
+      {/* Hero: Failure Outlook Cards — connected to live data */}
+      <RiskOverviewCards liveEvents={liveEvents} />
 
       {/* Main Content: Map + Detail */}
       <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Left: Map (3 cols) */}
         <div className="lg:col-span-3 space-y-4">
-          <RiskMapPanel
-            onSelectZone={handleSelectZone}
-            selectedZoneId={undefined}
-          />
+          {MAPBOX_TOKEN !== '__MAPBOX_TOKEN__' ? (
+            <MapboxRiskMap
+              mapboxToken={MAPBOX_TOKEN}
+              liveEvents={liveEvents}
+              onSelectZone={handleSelectZone}
+            />
+          ) : (
+            <div className="bg-card border border-border rounded-lg p-6 text-center">
+              <p className="text-xs font-mono text-muted-foreground mb-2">Mapbox GL map requires a token</p>
+              <p className="text-[10px] font-mono text-muted-foreground">Share your Mapbox public token (pk.*) to activate the geospatial view</p>
+            </div>
+          )}
           <SimulationForecastPanel />
         </div>
 
