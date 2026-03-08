@@ -7,6 +7,8 @@ import { CascadeGraphPanel } from '@/components/dashboard/CascadeGraphPanel';
 import { FragilityIndexPanel } from '@/components/dashboard/FragilityIndexPanel';
 import { RiskRankingTable } from '@/components/dashboard/RiskRankingTable';
 import { SimulationForecastPanel } from '@/components/dashboard/SimulationForecastPanel';
+import { SimulationPlayback } from '@/components/dashboard/SimulationPlayback';
+import { CounterfactualComparison } from '@/components/dashboard/CounterfactualComparison';
 import { DataSourceHealthBar } from '@/components/dashboard/DataSourceHealthBar';
 import { mockRiskEvents, type RiskEvent, type MapZone } from '@/data/mockRiskData';
 
