@@ -93,11 +93,27 @@ export const DashboardHeader = () => {
               LIVE
             </div>
 
+            {/* Export */}
+            <button onClick={() => setExportOpen(true)}
+              className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+              title="Export data">
+              <Download className="w-3.5 h-3.5" />
+            </button>
+
             {/* Settings */}
             <button onClick={() => setSettingsOpen(true)}
               className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
               <Settings className="w-3.5 h-3.5" />
             </button>
+
+            {/* Admin (only for admins) */}
+            {isAdmin && (
+              <button onClick={() => setAdminOpen(true)}
+                className="p-1.5 rounded-md hover:bg-secondary text-destructive hover:text-destructive transition-colors"
+                title="Admin panel">
+                <ShieldAlert className="w-3.5 h-3.5" />
+              </button>
+            )}
 
             {/* Sign out */}
             {user && (
