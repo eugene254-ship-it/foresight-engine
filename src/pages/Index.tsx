@@ -18,6 +18,19 @@ import { mockRiskEvents, type RiskEvent, type MapZone } from '@/data/mockRiskDat
 
 const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState<RiskEvent | null>(null);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const { events: liveEvents, status: streamStatus } = useRealtimeRisks();
+
+  const handleTriggerSimulation = useCallback(async () => {
+    setIsSimulating(true);
+    try {
+      await supabase.functions.invoke('simulate-risk-stream');
+    } catch (err) {
+      console.error('Simulation error:', err);
+    } finally {
+      setTimeout(() => setIsSimulating(false), 1000);
+    }
+  }, []);
 
   const handleSelectZone = useCallback((zone: MapZone) => {
     // Find a matching risk event for the zone
