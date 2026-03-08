@@ -12,6 +12,7 @@ import { CounterfactualComparison } from '@/components/dashboard/CounterfactualC
 import { DataSourceHealthBar } from '@/components/dashboard/DataSourceHealthBar';
 import { LiveStreamIndicator } from '@/components/dashboard/LiveStreamIndicator';
 import { LiveEventFeed } from '@/components/dashboard/LiveEventFeed';
+import { CriticalAlertBanner } from '@/components/dashboard/CriticalAlertBanner';
 import { useRealtimeRisks } from '@/hooks/useRealtimeRisks';
 import { supabase } from '@/integrations/supabase/client';
 import { mockRiskEvents, type RiskEvent } from '@/data/mockRiskData';
@@ -50,6 +51,9 @@ const Index = () => {
 
       {/* Hero: Failure Outlook Cards — connected to live data */}
       <RiskOverviewCards liveEvents={liveEvents} />
+
+      {/* Critical Alert Banner */}
+      <CriticalAlertBanner liveEvents={liveEvents} />
 
       {/* Main Content: Map + Detail */}
       <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-5 gap-4">
