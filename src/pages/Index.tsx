@@ -88,6 +88,11 @@ const Index = () => {
         <CounterfactualComparison />
       </div>
 
+      {/* Historical Timeline */}
+      <div className="px-4 pb-4">
+        <HistoricalTimeline />
+      </div>
+
       {/* Risk Ranking Table */}
       <div className="px-4 pb-4">
         <RiskRankingTable onSelectEvent={handleSelectEvent} />
