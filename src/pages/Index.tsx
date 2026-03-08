@@ -52,6 +52,9 @@ const Index = () => {
       {/* Hero: Failure Outlook Cards — connected to live data */}
       <RiskOverviewCards liveEvents={liveEvents} />
 
+      {/* Critical Alert Banner */}
+      <CriticalAlertBanner liveEvents={liveEvents} />
+
       {/* Main Content: Map + Detail */}
       <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Left: Map (3 cols) */}
