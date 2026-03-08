@@ -14,7 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      live_risk_events: {
+        Row: {
+          cascade_potential: number
+          confidence: string
+          created_at: string
+          drivers: string[] | null
+          event_key: string
+          exposure: number
+          failure_pathway: string | null
+          id: string
+          impact_window: string | null
+          interventions: string[] | null
+          name: string
+          probability: number
+          region: string
+          sector: string
+          severity: number
+          status: string
+          updated_at: string
+          velocity: string
+        }
+        Insert: {
+          cascade_potential?: number
+          confidence?: string
+          created_at?: string
+          drivers?: string[] | null
+          event_key: string
+          exposure?: number
+          failure_pathway?: string | null
+          id?: string
+          impact_window?: string | null
+          interventions?: string[] | null
+          name: string
+          probability: number
+          region: string
+          sector: string
+          severity: number
+          status?: string
+          updated_at?: string
+          velocity?: string
+        }
+        Update: {
+          cascade_potential?: number
+          confidence?: string
+          created_at?: string
+          drivers?: string[] | null
+          event_key?: string
+          exposure?: number
+          failure_pathway?: string | null
+          id?: string
+          impact_window?: string | null
+          interventions?: string[] | null
+          name?: string
+          probability?: number
+          region?: string
+          sector?: string
+          severity?: number
+          status?: string
+          updated_at?: string
+          velocity?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
