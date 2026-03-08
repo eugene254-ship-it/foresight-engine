@@ -82,6 +82,15 @@ export const DashboardHeader = () => {
             <span className="w-1.5 h-1.5 rounded-full bg-risk-stable animate-pulse" />
             LIVE
           </div>
+
+          {/* User / Sign out */}
+          {user && (
+            <button onClick={signOut}
+              className="flex items-center gap-1.5 px-2 py-1 text-[11px] font-mono text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors">
+              <LogOut className="w-3 h-3" />
+              Sign Out
+            </button>
+          )}
         </div>
       </div>
     </header>
