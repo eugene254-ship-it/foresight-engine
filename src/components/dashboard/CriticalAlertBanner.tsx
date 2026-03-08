@@ -52,6 +52,18 @@ export const CriticalAlertBanner = ({ liveEvents }: Props) => {
     setDismissed(prev => new Set(prev).add(key));
   };
 
+  // Trigger sound + notification for new critical alerts
+  useEffect(() => {
+    if (soundEnabled && alerts.length > 0) {
+      checkAndAlert(alerts.map(a => a.eventKey));
+    }
+  }, [alerts, soundEnabled, checkAndAlert]);
+
+  // Request notification permission on first enable
+  useEffect(() => {
+    if (soundEnabled) requestPermission();
+  }, [soundEnabled, requestPermission]);
+
   if (alerts.length === 0) return null;
 
   const shown = expanded ? alerts : alerts.slice(0, 1);
