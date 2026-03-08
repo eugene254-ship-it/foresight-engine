@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { Shield, Radio, Filter, LogOut, Settings } from 'lucide-react';
+import { Shield, Radio, Filter, LogOut, Settings, Download, ShieldAlert } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 import { useDashboardConfig } from '@/hooks/useDashboardConfig';
 import { SettingsPanel } from './SettingsPanel';
+import { AdminPanel } from './AdminPanel';
+import { ExportPanel } from './ExportPanel';
 import { cn } from '@/lib/utils';
 
 const timeRanges = ['Now', '24h', '7d', '30d'] as const;
