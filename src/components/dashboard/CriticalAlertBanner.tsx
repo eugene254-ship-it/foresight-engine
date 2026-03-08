@@ -89,6 +89,15 @@ export const CriticalAlertBanner = ({ liveEvents }: Props) => {
                 Critical Threshold Breach — {alerts.length} active
               </span>
             </div>
+            <button
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              className="p-1 rounded hover:bg-destructive/10 transition-colors"
+              title={soundEnabled ? 'Mute alerts' : 'Unmute alerts'}
+            >
+              {soundEnabled
+                ? <Volume2 className="w-3.5 h-3.5 text-destructive" />
+                : <VolumeX className="w-3.5 h-3.5 text-muted-foreground" />}
+            </button>
             {alerts.length > 1 && (
               <button
                 onClick={() => setExpanded(!expanded)}
