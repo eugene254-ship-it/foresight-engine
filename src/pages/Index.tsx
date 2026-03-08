@@ -53,6 +53,12 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Simulation Playback + Counterfactual */}
+      <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <SimulationPlayback />
+        <CounterfactualComparison />
+      </div>
+
       {/* Risk Ranking Table */}
       <div className="px-4 pb-4">
         <RiskRankingTable onSelectEvent={handleSelectEvent} />
