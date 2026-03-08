@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Shield, Radio, Clock, Filter, ChevronDown } from 'lucide-react';
+import { Shield, Radio, Clock, Filter, ChevronDown, LogOut } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
 const timeRanges = ['Now', '24h', '7d', '30d'] as const;
