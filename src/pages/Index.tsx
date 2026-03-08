@@ -10,6 +10,10 @@ import { SimulationForecastPanel } from '@/components/dashboard/SimulationForeca
 import { SimulationPlayback } from '@/components/dashboard/SimulationPlayback';
 import { CounterfactualComparison } from '@/components/dashboard/CounterfactualComparison';
 import { DataSourceHealthBar } from '@/components/dashboard/DataSourceHealthBar';
+import { LiveStreamIndicator } from '@/components/dashboard/LiveStreamIndicator';
+import { LiveEventFeed } from '@/components/dashboard/LiveEventFeed';
+import { useRealtimeRisks } from '@/hooks/useRealtimeRisks';
+import { supabase } from '@/integrations/supabase/client';
 import { mockRiskEvents, type RiskEvent, type MapZone } from '@/data/mockRiskData';
 
 const Index = () => {
