@@ -1,5 +1,6 @@
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Radio, Wifi, WifiOff } from 'lucide-react';
+import { Radio, Wifi, WifiOff, Play, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { RealtimeStatus } from '@/hooks/useRealtimeRisks';
 
@@ -10,6 +11,31 @@ interface Props {
 }
 
 export const LiveStreamIndicator = ({ status, onTriggerSimulation, isSimulating }: Props) => {
+  const [autoStream, setAutoStream] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const toggleAutoStream = useCallback(() => {
+    setAutoStream(prev => !prev);
+  }, []);
+
+  useEffect(() => {
+    if (autoStream) {
+      // Fire immediately then every 5s
+      onTriggerSimulation();
+      intervalRef.current = setInterval(() => {
+        onTriggerSimulation();
+      }, 5000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [autoStream, onTriggerSimulation]);
+
   const timeSince = status.lastEventAt
     ? `${Math.round((Date.now() - status.lastEventAt.getTime()) / 1000)}s ago`
     : 'waiting…';
@@ -51,28 +77,41 @@ export const LiveStreamIndicator = ({ status, onTriggerSimulation, isSimulating 
         <div className="bg-secondary/30 rounded-md p-2 text-center">
           <div className={cn(
             'text-lg font-mono font-bold tabular-nums',
-            status.connected ? 'text-risk-stable' : 'text-muted-foreground'
+            autoStream ? 'text-risk-critical animate-pulse' : status.connected ? 'text-risk-stable' : 'text-muted-foreground'
           )}>
-            {status.connected ? 'LIVE' : 'OFF'}
+            {autoStream ? 'AUTO' : status.connected ? 'LIVE' : 'OFF'}
           </div>
           <div className="text-[9px] font-mono text-muted-foreground">STATUS</div>
         </div>
       </div>
 
-      <button
-        onClick={onTriggerSimulation}
-        disabled={isSimulating}
-        className={cn(
-          'w-full py-2 rounded-md text-[11px] font-mono font-medium transition-all',
-          'border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20',
-          isSimulating && 'opacity-50 cursor-not-allowed'
-        )}
-      >
-        <Radio className="w-3 h-3 mr-1.5 inline" />
-        {isSimulating ? 'Streaming…' : 'Simulate Live Event'}
-      </button>
+      <div className="flex gap-2">
+        <button
+          onClick={onTriggerSimulation}
+          disabled={isSimulating || autoStream}
+          className={cn(
+            'flex-1 py-2 rounded-md text-[11px] font-mono font-medium transition-all',
+            'border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20',
+            (isSimulating || autoStream) && 'opacity-50 cursor-not-allowed'
+          )}
+        >
+          <Radio className="w-3 h-3 mr-1.5 inline" />
+          {isSimulating ? 'Streaming…' : 'Simulate Event'}
+        </button>
+        <button
+          onClick={toggleAutoStream}
+          className={cn(
+            'px-3 py-2 rounded-md text-[11px] font-mono font-medium transition-all border',
+            autoStream
+              ? 'border-risk-critical/50 bg-risk-critical/10 text-risk-critical hover:bg-risk-critical/20'
+              : 'border-risk-stable/30 bg-risk-stable/10 text-risk-stable hover:bg-risk-stable/20'
+          )}
+        >
+          {autoStream ? <Square className="w-3 h-3 inline mr-1" /> : <Play className="w-3 h-3 inline mr-1" />}
+          {autoStream ? 'Stop' : 'Auto'}
+        </button>
+      </div>
 
-      {/* Pulse animation for incoming events */}
       <AnimatePresence>
         {status.lastEventAt && Date.now() - status.lastEventAt.getTime() < 3000 && (
           <motion.div
