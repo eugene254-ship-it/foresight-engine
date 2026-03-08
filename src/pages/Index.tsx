@@ -13,6 +13,7 @@ import { DataSourceHealthBar } from '@/components/dashboard/DataSourceHealthBar'
 import { LiveStreamIndicator } from '@/components/dashboard/LiveStreamIndicator';
 import { LiveEventFeed } from '@/components/dashboard/LiveEventFeed';
 import { CriticalAlertBanner } from '@/components/dashboard/CriticalAlertBanner';
+import { HistoricalTimeline } from '@/components/dashboard/HistoricalTimeline';
 import { useRealtimeRisks } from '@/hooks/useRealtimeRisks';
 import { supabase } from '@/integrations/supabase/client';
 import { mockRiskEvents, type RiskEvent } from '@/data/mockRiskData';
@@ -85,6 +86,11 @@ const Index = () => {
       <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <SimulationPlayback />
         <CounterfactualComparison />
+      </div>
+
+      {/* Historical Timeline */}
+      <div className="px-4 pb-4">
+        <HistoricalTimeline />
       </div>
 
       {/* Risk Ranking Table */}

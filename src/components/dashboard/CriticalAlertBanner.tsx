@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { AlertTriangle, X, ChevronDown, ChevronUp, Volume2, VolumeX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { LiveRiskEvent } from '@/hooks/useRealtimeRisks';
+import { useAlertSound } from '@/hooks/useAlertSound';
 
 const CRITICAL_PROBABILITY = 75;
 const CRITICAL_SEVERITY = 85;
@@ -23,6 +24,8 @@ interface Props {
 export const CriticalAlertBanner = ({ liveEvents }: Props) => {
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [expanded, setExpanded] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const { checkAndAlert, requestPermission } = useAlertSound();
 
   const alerts = useMemo(() => {
     const result: CriticalAlert[] = [];
@@ -49,6 +52,18 @@ export const CriticalAlertBanner = ({ liveEvents }: Props) => {
     setDismissed(prev => new Set(prev).add(key));
   };
 
+  // Trigger sound + notification for new critical alerts
+  useEffect(() => {
+    if (soundEnabled && alerts.length > 0) {
+      checkAndAlert(alerts.map(a => a.eventKey));
+    }
+  }, [alerts, soundEnabled, checkAndAlert]);
+
+  // Request notification permission on first enable
+  useEffect(() => {
+    if (soundEnabled) requestPermission();
+  }, [soundEnabled, requestPermission]);
+
   if (alerts.length === 0) return null;
 
   const shown = expanded ? alerts : alerts.slice(0, 1);
@@ -74,6 +89,15 @@ export const CriticalAlertBanner = ({ liveEvents }: Props) => {
                 Critical Threshold Breach — {alerts.length} active
               </span>
             </div>
+            <button
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              className="p-1 rounded hover:bg-destructive/10 transition-colors"
+              title={soundEnabled ? 'Mute alerts' : 'Unmute alerts'}
+            >
+              {soundEnabled
+                ? <Volume2 className="w-3.5 h-3.5 text-destructive" />
+                : <VolumeX className="w-3.5 h-3.5 text-muted-foreground" />}
+            </button>
             {alerts.length > 1 && (
               <button
                 onClick={() => setExpanded(!expanded)}
