@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { AlertTriangle, X, ChevronDown, ChevronUp, Volume2, VolumeX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { LiveRiskEvent } from '@/hooks/useRealtimeRisks';
+import { useAlertSound } from '@/hooks/useAlertSound';
 
 const CRITICAL_PROBABILITY = 75;
 const CRITICAL_SEVERITY = 85;
