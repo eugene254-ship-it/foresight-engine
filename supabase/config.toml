@@ -1,1 +1,4 @@
 project_id = "glqmijbwhvskjmcvmdoi"
+
+[functions.simulate-risk-stream]
+verify_jwt = false
