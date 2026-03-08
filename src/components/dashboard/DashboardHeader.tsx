@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { Shield, Radio, Filter, LogOut, Settings } from 'lucide-react';
+import { Shield, Radio, Filter, LogOut, Settings, Download, ShieldAlert } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 import { useDashboardConfig } from '@/hooks/useDashboardConfig';
 import { SettingsPanel } from './SettingsPanel';
+import { AdminPanel } from './AdminPanel';
+import { ExportPanel } from './ExportPanel';
 import { cn } from '@/lib/utils';
 
 const timeRanges = ['Now', '24h', '7d', '30d'] as const;
@@ -11,8 +14,11 @@ const scenarioModes = ['Live Risk', 'Simulated', 'Historical'] as const;
 
 export const DashboardHeader = () => {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useUserRole();
   const { config, saveConfig } = useDashboardConfig();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
 
   const update = (partial: Partial<typeof config>) => {
     saveConfig({ ...config, ...partial });
@@ -87,11 +93,27 @@ export const DashboardHeader = () => {
               LIVE
             </div>
 
+            {/* Export */}
+            <button onClick={() => setExportOpen(true)}
+              className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+              title="Export data">
+              <Download className="w-3.5 h-3.5" />
+            </button>
+
             {/* Settings */}
             <button onClick={() => setSettingsOpen(true)}
               className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
               <Settings className="w-3.5 h-3.5" />
             </button>
+
+            {/* Admin (only for admins) */}
+            {isAdmin && (
+              <button onClick={() => setAdminOpen(true)}
+                className="p-1.5 rounded-md hover:bg-secondary text-destructive hover:text-destructive transition-colors"
+                title="Admin panel">
+                <ShieldAlert className="w-3.5 h-3.5" />
+              </button>
+            )}
 
             {/* Sign out */}
             {user && (
@@ -106,6 +128,8 @@ export const DashboardHeader = () => {
       </header>
 
       <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
+      <ExportPanel open={exportOpen} onClose={() => setExportOpen(false)} />
     </>
   );
 };
