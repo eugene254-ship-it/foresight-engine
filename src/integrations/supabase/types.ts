@@ -44,6 +44,39 @@ export type Database = {
         }
         Relationships: []
       }
+      dashboard_configs: {
+        Row: {
+          created_at: string
+          high_conf_only: boolean
+          id: string
+          scenario_mode: string
+          sector: string
+          time_range: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          high_conf_only?: boolean
+          id?: string
+          scenario_mode?: string
+          sector?: string
+          time_range?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          high_conf_only?: boolean
+          id?: string
+          scenario_mode?: string
+          sector?: string
+          time_range?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       live_risk_events: {
         Row: {
           cascade_potential: number
