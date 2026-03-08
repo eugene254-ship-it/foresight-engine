@@ -128,6 +128,8 @@ export const DashboardHeader = () => {
       </header>
 
       <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
+      <ExportPanel open={exportOpen} onClose={() => setExportOpen(false)} />
     </>
   );
 };
