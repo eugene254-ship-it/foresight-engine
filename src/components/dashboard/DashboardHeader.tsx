@@ -14,8 +14,11 @@ const scenarioModes = ['Live Risk', 'Simulated', 'Historical'] as const;
 
 export const DashboardHeader = () => {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useUserRole();
   const { config, saveConfig } = useDashboardConfig();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
 
   const update = (partial: Partial<typeof config>) => {
     saveConfig({ ...config, ...partial });
