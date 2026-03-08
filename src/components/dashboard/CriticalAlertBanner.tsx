@@ -24,6 +24,8 @@ interface Props {
 export const CriticalAlertBanner = ({ liveEvents }: Props) => {
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [expanded, setExpanded] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const { checkAndAlert, requestPermission } = useAlertSound();
 
   const alerts = useMemo(() => {
     const result: CriticalAlert[] = [];
