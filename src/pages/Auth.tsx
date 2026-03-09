@@ -74,7 +74,7 @@ const Auth = () => {
             <span className="text-sm font-mono font-bold text-foreground tracking-widest uppercase">FRAGILITY</span>
           </div>
           <p className="text-xs font-mono text-muted-foreground">
-            {isLogin ? 'Sign in to access the risk dashboard' : 'Create an analyst account'}
+            {forgotMode ? 'Enter your email to reset your password' : isLogin ? 'Sign in to access the risk dashboard' : 'Create an analyst account'}
           </p>
         </div>
 
