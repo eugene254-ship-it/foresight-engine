@@ -147,17 +147,35 @@ const Auth = () => {
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-mono font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
-            {isLogin ? 'Sign In' : 'Create Account'}
+            {forgotMode ? 'Send Reset Link' : isLogin ? 'Sign In' : 'Create Account'}
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        <p className="text-center text-xs font-mono text-muted-foreground mt-4">
-          {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
-          <button onClick={() => { setIsLogin(!isLogin); setError(''); setMessage(''); }}
-            className="text-primary hover:underline">
-            {isLogin ? 'Sign up' : 'Sign in'}
-          </button>
+        {isLogin && !forgotMode && (
+          <p className="text-center text-xs font-mono text-muted-foreground mt-3">
+            <button onClick={() => { setForgotMode(true); setError(''); setMessage(''); }}
+              className="text-primary hover:underline">
+              Forgot password?
+            </button>
+          </p>
+        )}
+
+        <p className="text-center text-xs font-mono text-muted-foreground mt-3">
+          {forgotMode ? (
+            <button onClick={() => { setForgotMode(false); setError(''); setMessage(''); }}
+              className="text-primary hover:underline">
+              Back to sign in
+            </button>
+          ) : (
+            <>
+              {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
+              <button onClick={() => { setIsLogin(!isLogin); setError(''); setMessage(''); }}
+                className="text-primary hover:underline">
+                {isLogin ? 'Sign up' : 'Sign in'}
+              </button>
+            </>
+          )}
         </p>
       </motion.div>
     </div>

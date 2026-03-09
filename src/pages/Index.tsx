@@ -25,6 +25,7 @@ const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState<RiskEvent | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const { events: liveEvents, status: streamStatus } = useRealtimeRisks();
+  useTeamNotifications();
 
   const handleTriggerSimulation = useCallback(async () => {
     setIsSimulating(true);
