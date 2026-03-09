@@ -9,6 +9,7 @@ import { RiskRankingTable } from '@/components/dashboard/RiskRankingTable';
 import { SimulationForecastPanel } from '@/components/dashboard/SimulationForecastPanel';
 import { SimulationPlayback } from '@/components/dashboard/SimulationPlayback';
 import { CounterfactualComparison } from '@/components/dashboard/CounterfactualComparison';
+import { ContributingFactorsPanel } from '@/components/dashboard/ContributingFactorsPanel';
 import { DataSourceHealthBar } from '@/components/dashboard/DataSourceHealthBar';
 import { LiveStreamIndicator } from '@/components/dashboard/LiveStreamIndicator';
 import { LiveEventFeed } from '@/components/dashboard/LiveEventFeed';
@@ -39,7 +40,6 @@ const Index = () => {
   }, []);
 
   const handleSelectZone = useCallback((zoneId: string) => {
-    // Find a matching risk event for the zone
     const match = mockRiskEvents.find(e => e.id === zoneId) || mockRiskEvents[0];
     setSelectedEvent(match);
   }, []);
@@ -50,17 +50,17 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* 1. Global Control Bar */}
       <DashboardHeader />
 
-      {/* Hero: Failure Outlook Cards — connected to live data */}
+      {/* 2. Failure Outlook Summary Cards */}
       <RiskOverviewCards liveEvents={liveEvents} />
 
-      {/* Critical Alert Banner */}
+      {/* 13. Alert Stream */}
       <CriticalAlertBanner liveEvents={liveEvents} />
 
-      {/* Main Content: Map + Detail */}
+      {/* 3. Risk Heat Map + 5. Simulation Forecast */}
       <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-5 gap-4">
-        {/* Left: Map (3 cols) */}
         <div className="lg:col-span-3 space-y-4">
           {MAPBOX_TOKEN !== '__MAPBOX_TOKEN__' ? (
             <MapboxRiskMap
@@ -77,30 +77,31 @@ const Index = () => {
           <SimulationForecastPanel />
         </div>
 
-        {/* Right: Cascade + Fragility (2 cols) */}
+        {/* 6. Cascading Failure Graph + 7. System Fragility Index */}
         <div className="lg:col-span-2 space-y-4">
           <CascadeGraphPanel />
           <FragilityIndexPanel />
         </div>
       </div>
 
-      {/* Simulation Playback + Counterfactual */}
+      {/* 9. Contributing Factors + 10. Intervention Leverage */}
       <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <SimulationPlayback />
+        <ContributingFactorsPanel />
         <CounterfactualComparison />
       </div>
 
-      {/* Historical Timeline */}
-      <div className="px-4 pb-4">
+      {/* 12. Timeline Scrubber / Simulation Playback */}
+      <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <SimulationPlayback />
         <HistoricalTimeline />
       </div>
 
-      {/* Risk Ranking Table */}
+      {/* 8. Ranked Risk Table */}
       <div className="px-4 pb-4">
         <RiskRankingTable onSelectEvent={handleSelectEvent} />
       </div>
 
-      {/* Live Streaming Section */}
+      {/* 13. Live Streaming + Alert Feed */}
       <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
         <LiveStreamIndicator
           status={streamStatus}
@@ -112,12 +113,12 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Data Source Health */}
+      {/* 11. Data Confidence & Source Health */}
       <div className="px-4 pb-6">
         <DataSourceHealthBar />
       </div>
 
-      {/* Detail Drawer */}
+      {/* 4. Risk Detail Drawer */}
       <RiskDetailDrawer event={selectedEvent} onClose={() => setSelectedEvent(null)} />
     </div>
   );
