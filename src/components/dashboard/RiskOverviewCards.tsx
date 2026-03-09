@@ -17,11 +17,8 @@ const sparklineColor: Record<string, string> = {
   stable: 'hsl(160, 60%, 45%)',
 };
 
-// Map live events to card overrides
 function computeLiveOverrides(liveEvents: LiveRiskEvent[]) {
   const overrides: Record<string, { metric: number; severity: RiskSeverity; trend: TrendDirection; confidence: ConfidenceLevel }> = {};
-
-  // Find latest event per event_key
   const latest = new Map<string, LiveRiskEvent>();
   for (const e of liveEvents) {
     const existing = latest.get(e.event_key);
@@ -30,7 +27,6 @@ function computeLiveOverrides(liveEvents: LiveRiskEvent[]) {
     }
   }
 
-  // Map event_keys to card ids
   const flood = latest.get('r1');
   if (flood) {
     overrides['flood'] = {
@@ -51,17 +47,6 @@ function computeLiveOverrides(liveEvents: LiveRiskEvent[]) {
     };
   }
 
-  const vaccine = latest.get('r3');
-  if (vaccine) {
-    overrides['vaccine'] = {
-      metric: Math.round(Number(vaccine.probability)),
-      severity: (Number(vaccine.probability) >= 60 ? 'high' : Number(vaccine.probability) >= 40 ? 'medium' : 'low') as RiskSeverity,
-      trend: vaccine.velocity as TrendDirection,
-      confidence: vaccine.confidence as ConfidenceLevel,
-    };
-  }
-
-  // Compute fragility index from all live events
   if (liveEvents.length > 0) {
     const avgSeverity = liveEvents.reduce((s, e) => s + Number(e.severity), 0) / liveEvents.length;
     const fragility = Math.min(1, avgSeverity / 100);
@@ -72,10 +57,6 @@ function computeLiveOverrides(liveEvents: LiveRiskEvent[]) {
       trend: risingCount > liveEvents.length / 2 ? 'rising' : 'stable',
       confidence: 'high',
     };
-  }
-
-  // Exposure from all live events
-  if (liveEvents.length > 0) {
     const totalExposure = new Set(liveEvents.map(e => e.event_key));
     const exposureSum = Array.from(totalExposure).reduce((sum, key) => {
       const ev = latest.get(key);
@@ -100,15 +81,15 @@ export const RiskOverviewCards = ({ liveEvents = [] }: Props) => {
   const overrides = useMemo(() => computeLiveOverrides(liveEvents), [liveEvents]);
 
   return (
-    <div className="px-4 py-4">
+    <div className="px-4 py-3">
       <div className="flex items-center gap-2 mb-3">
-        <h2 className="text-xs font-mono text-muted-foreground tracking-widest uppercase">Current Failure Outlook</h2>
+        <h2 className="text-xs font-mono text-muted-foreground tracking-widest uppercase">Failure Outlook</h2>
         {liveEvents.length > 0 && (
           <span className="text-[9px] font-mono text-risk-stable animate-pulse">● LIVE</span>
         )}
         <div className="h-px flex-1 bg-border" />
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
         {mockRiskCards.map((card, i) => {
           const override = overrides[card.id];
           const metric = override?.metric ?? card.metric;
@@ -149,13 +130,13 @@ export const RiskOverviewCards = ({ liveEvents = [] }: Props) => {
                 <span className="text-[10px] font-mono text-muted-foreground">{card.unit}</span>
               </div>
 
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-1.5">
                 <SeverityBadge severity={severity} />
                 <TrendChip direction={trend} delta={card.trendDelta} />
               </div>
 
               {/* Sparkline */}
-              <div className="h-8 -mx-1">
+              <div className="h-7 -mx-1">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={card.sparkline}>
                     <defs>
@@ -169,8 +150,9 @@ export const RiskOverviewCards = ({ liveEvents = [] }: Props) => {
                 </ResponsiveContainer>
               </div>
 
-              <div className="text-[9px] font-mono text-muted-foreground mt-1">
-                vs prev: {card.previousPeriod}{card.unit.includes('%') ? '%' : card.unit.includes('/') ? '' : ` ${card.unit}`}
+              <div className="flex items-center justify-between text-[9px] font-mono text-muted-foreground mt-1">
+                <span>vs prev: {card.previousPeriod}{card.unit.includes('%') ? '%' : ''}</span>
+                <span>{card.lastUpdated}</span>
               </div>
             </motion.div>
           );
