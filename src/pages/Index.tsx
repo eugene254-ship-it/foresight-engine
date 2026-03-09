@@ -10,6 +10,7 @@ import { SimulationForecastPanel } from '@/components/dashboard/SimulationForeca
 import { SimulationPlayback } from '@/components/dashboard/SimulationPlayback';
 import { CounterfactualComparison } from '@/components/dashboard/CounterfactualComparison';
 import { ContributingFactorsPanel } from '@/components/dashboard/ContributingFactorsPanel';
+import { InterventionReadinessPanel } from '@/components/dashboard/InterventionReadinessPanel';
 import { DataSourceHealthBar } from '@/components/dashboard/DataSourceHealthBar';
 import { LiveStreamIndicator } from '@/components/dashboard/LiveStreamIndicator';
 import { LiveEventFeed } from '@/components/dashboard/LiveEventFeed';
@@ -56,7 +57,7 @@ const Index = () => {
       {/* 2. Failure Outlook Summary Cards */}
       <RiskOverviewCards liveEvents={liveEvents} />
 
-      {/* 13. Alert Stream */}
+      {/* 13. Alert Stream — Critical Threshold Breaches */}
       <CriticalAlertBanner liveEvents={liveEvents} />
 
       {/* 3. Risk Heat Map + 5. Simulation Forecast */}
@@ -90,9 +91,17 @@ const Index = () => {
         <CounterfactualComparison />
       </div>
 
-      {/* 12. Timeline Scrubber / Simulation Playback */}
-      <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <SimulationPlayback />
+      {/* Intervention Readiness Overview */}
+      <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <InterventionReadinessPanel />
+        <div className="lg:col-span-2">
+          {/* 12. Timeline Scrubber / Simulation Playback */}
+          <SimulationPlayback />
+        </div>
+      </div>
+
+      {/* Historical Timeline */}
+      <div className="px-4 pb-4">
         <HistoricalTimeline />
       </div>
 
