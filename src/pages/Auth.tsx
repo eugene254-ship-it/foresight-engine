@@ -16,11 +16,23 @@ const Auth = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
+  const [forgotMode, setForgotMode] = useState(false);
+
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setMessage('');
+
+    if (forgotMode) {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) setError(error.message);
+      else setMessage('Password reset link sent. Check your email.');
+      setLoading(false);
+      return;
+    }
 
     if (isLogin) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
