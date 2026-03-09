@@ -15,6 +15,7 @@ import { LiveEventFeed } from '@/components/dashboard/LiveEventFeed';
 import { CriticalAlertBanner } from '@/components/dashboard/CriticalAlertBanner';
 import { HistoricalTimeline } from '@/components/dashboard/HistoricalTimeline';
 import { useRealtimeRisks } from '@/hooks/useRealtimeRisks';
+import { useTeamNotifications } from '@/hooks/useTeamNotifications';
 import { supabase } from '@/integrations/supabase/client';
 import { mockRiskEvents, type RiskEvent } from '@/data/mockRiskData';
 
