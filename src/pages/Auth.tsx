@@ -16,11 +16,23 @@ const Auth = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
+  const [forgotMode, setForgotMode] = useState(false);
+
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setMessage('');
+
+    if (forgotMode) {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) setError(error.message);
+      else setMessage('Password reset link sent. Check your email.');
+      setLoading(false);
+      return;
+    }
 
     if (isLogin) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -62,7 +74,7 @@ const Auth = () => {
             <span className="text-sm font-mono font-bold text-foreground tracking-widest uppercase">FRAGILITY</span>
           </div>
           <p className="text-xs font-mono text-muted-foreground">
-            {isLogin ? 'Sign in to access the risk dashboard' : 'Create an analyst account'}
+            {forgotMode ? 'Enter your email to reset your password' : isLogin ? 'Sign in to access the risk dashboard' : 'Create an analyst account'}
           </p>
         </div>
 
@@ -100,22 +112,24 @@ const Auth = () => {
               className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-border bg-card text-sm font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Password"
-              required
-              minLength={6}
-              className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-border bg-card text-sm font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-            />
-            <button type="button" onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
-          </div>
+          {!forgotMode && (
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="Password"
+                required
+                minLength={6}
+                className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-border bg-card text-sm font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+              <button type="button" onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          )}
 
           {error && (
             <div className="text-xs font-mono text-destructive bg-destructive/10 rounded-md p-2">
@@ -133,17 +147,35 @@ const Auth = () => {
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-mono font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
-            {isLogin ? 'Sign In' : 'Create Account'}
+            {forgotMode ? 'Send Reset Link' : isLogin ? 'Sign In' : 'Create Account'}
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        <p className="text-center text-xs font-mono text-muted-foreground mt-4">
-          {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
-          <button onClick={() => { setIsLogin(!isLogin); setError(''); setMessage(''); }}
-            className="text-primary hover:underline">
-            {isLogin ? 'Sign up' : 'Sign in'}
-          </button>
+        {isLogin && !forgotMode && (
+          <p className="text-center text-xs font-mono text-muted-foreground mt-3">
+            <button onClick={() => { setForgotMode(true); setError(''); setMessage(''); }}
+              className="text-primary hover:underline">
+              Forgot password?
+            </button>
+          </p>
+        )}
+
+        <p className="text-center text-xs font-mono text-muted-foreground mt-3">
+          {forgotMode ? (
+            <button onClick={() => { setForgotMode(false); setError(''); setMessage(''); }}
+              className="text-primary hover:underline">
+              Back to sign in
+            </button>
+          ) : (
+            <>
+              {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
+              <button onClick={() => { setIsLogin(!isLogin); setError(''); setMessage(''); }}
+                className="text-primary hover:underline">
+                {isLogin ? 'Sign up' : 'Sign in'}
+              </button>
+            </>
+          )}
         </p>
       </motion.div>
     </div>
